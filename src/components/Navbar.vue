@@ -1,6 +1,12 @@
 <template>
     <div>
         <nav>
+
+            <v-snackbar v-model="snackbar" :timeout="4000" top color="success">
+                <span>Awesome! You added a new project.</span>
+                <v-btn flat color="white" @click="snackbar = false">Close</v-btn>
+            </v-snackbar>
+
             <v-toolbar flat app>
                 <v-toolbar-side-icon class="grey--text" @click="drawer = !drawer"></v-toolbar-side-icon>
                 <v-toolbar-title class="text-uppercase grey--text">
@@ -8,6 +14,33 @@
                     <span>Projects</span>
                 </v-toolbar-title>
                 <v-spacer></v-spacer>
+
+                <v-menu offset-y>
+                    <template v-slot:activator="{ on }">
+                        <v-btn
+                        flat
+                        color="grey"
+                        dark
+                        v-on="on"
+                        >
+                        <v-icon left>expand_more</v-icon>
+                        Dropdown
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-tile
+                        v-for="(link, index) in links"
+                        :key="index"
+                        router :to="link.route"
+                        >
+                        <v-list-tile-title>{{ link.text }}</v-list-tile-title>
+                        </v-list-tile>
+                    </v-list>
+                </v-menu>
+
+                <!-- dropdown menu -->
+
+
                 <v-btn flat color="grey">
                     <span>Sign Out</span>
                     <v-icon right>exit_to_app</v-icon>
@@ -23,6 +56,9 @@
                         <p class="white--text subheading mt-1">
                             The Net Ninja
                         </p>
+                    </v-flex>
+                    <v-flex class="mt-4 mb-3">
+                        <app-popup @projectAdded="snackbar = true"/>
                     </v-flex>
                 </v-layout>
                 <v-list>
@@ -41,19 +77,26 @@
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                drawer: false,
-                links: [
-                    { icon: 'dashboard', text: 'Dashboard',   route: '/' },
-                    { icon: 'folder',    text: 'My Projects', route: '/projects'},
-                    { icon: 'person',    text: 'Team',        route: '/team'}
-                ]
-            }
+import Popup from "./Popup"
+
+export default {
+    data() {
+        return {
+            drawer: false,
+            links: [
+                { icon: 'dashboard', text: 'Dashboard',   route: '/' },
+                { icon: 'folder',    text: 'My Projects', route: '/projects'},
+                { icon: 'person',    text: 'Team',        route: '/team'}
+            ],
+            snackbar: false
         }
-        
-    }
+    },
+  components: { 
+    'app-popup' : Popup 
+  }, 
+
+    
+}
 </script>
 
 <style scoped>
